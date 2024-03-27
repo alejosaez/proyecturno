@@ -22,7 +22,7 @@ return newUser
 
 }
 
- export const userControllerId=async(userId)=>{
+ export const userControllerId=async()=>{
 // buscar en la BD el usuario con esa id sea igual a userid
 // si se encontro, voy a tener que retornar el objeto de ese usuario 
 // si no existe el usuario con ese userId lo que hago es devolver un objeto vacio o un string/ undefaind
