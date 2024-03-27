@@ -14,6 +14,6 @@ const router: Router =Router();
 router.get("/appointments",getAllAppointments) // mas q n elemento devolves un arreglo
 router.get("/appointments/:id",searcAppointmentById) // devolver un objeto el id se recupera query.params
 router.post("/appointments/register",createAppointment) // recibo por query.body en objeto a almacenar
-router.put("/appointment",upDateAppointment)
+router.put("/appointments",upDateAppointment)
 
 export default router;
