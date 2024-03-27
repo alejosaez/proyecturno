@@ -1,10 +1,10 @@
 import IUser from "../interfaces/IUser";
-import { createUserService,getUsersService,deleteUserService,userControllerId } from "../services/usersServices"
+import { createUserService,getUsersService,deleteUserService,getUserByIdService } from "../services/usersServices"
 import { Request,Response } from "express";
 
 export const createUser=async(req:Request,res:Response)=>{
-    const {id,name, email, birthdate,dni}=req.body;
-    const newUser: IUser= await createUserService({id, name,email,birthdate,dni})
+    const { name, email, birthdate, dni, password } = req.body;
+    const newUser: IUser = await createUserService({ name, email, birthdate, dni, password });
     res.status(201).json(newUser)
     //  vamos a crear un usuario que tenga un id, emial, direccion,nombre, Fecha de naciomieno.
     // tomar los datos del usuario de la body request
@@ -22,7 +22,7 @@ export const searchUserbyId = async (req: Request, res: Response) => {
 
     try {
         // Llamar al servicio para obtener los datos del usuario por su ID
-        // const user = await userControllerId(userId);
+        // const user = await getUserByIdService(userId);
 
         // if (!userId) {
         //     return res.status(404).json({ error: 'Usuario no encontrado' });
