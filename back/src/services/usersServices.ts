@@ -1,37 +1,39 @@
-import IUser from "../interfaces/IUser"
-import UserDto from "../dto/UserDto";
+import IUser from "../interfaces/IUser";
+import { createCredential } from "./credentialsServervice";
 
-const users:IUser[]=[]
-let id: number=1;
-export const createUserService=async(userData:UserDto):Promise <IUser>=>{
-// recibir los datos del usuario 
-// crear un nuevo usuario
-// incluir el nuevo usuario dentro del arreglo
-// retornar el objeto creado 
-const newUser:IUser={
-    id:userData.id,
-    name:userData.name,
-    email:userData.email,
-    birthdate:userData.birthdate,
-    dni:userData.dni,
-    credentialsId:userData.id
+const users: IUser[] = [];
+let id: number = 1;
 
-  
+export const getUsersService = async (): Promise<IUser[]> => {
+  return users;
+};
 
-}
-users.push(newUser)
-id++;
-return newUser
+export const getUserByIdService = async (userId: number): Promise<IUser | undefined> => {
+  return users.find(user => user.id === userId);
+};
 
+export const createUserService = async (userData: Omit<IUser, "id" | "credentialsId"> & { password: string }): Promise<IUser> => {
+  // Generar las credenciales para el nuevo usuario
+  const credentialsId = await createCredential(userData.name, userData.password);
 
-}
+  // Crear el nuevo usuario con las credenciales generadas
+  const newUser: IUser = {
+    id: id++,
+    credentialsId: credentialsId,
+    name: userData.name,
+    email: userData.email,
+    birthdate: userData.birthdate,
+    dni: userData.dni
+  };
 
- export const userControllerId=async()=>{
-// buscar en la BD el usuario con esa id sea igual a userid
-// si se encontro, voy a tener que retornar el objeto de ese usuario 
-// si no existe el usuario con ese userId lo que hago es devolver un objeto vacio o un string/ undefaind
+  users.push(newUser);
 
- } 
-export const getUsersService=async()=> {}
+  return newUser;
+};
 
-export const deleteUserService =async()=>{}
+export const deleteUserService = async (userId: number): Promise<void> => {
+  const index = users.findIndex(user => user.id === userId);
+  if (index !== -1) {
+    users.splice(index, 1);
+  }
+};

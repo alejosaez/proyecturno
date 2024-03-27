@@ -1,12 +1,36 @@
-// Appointment:
 
-// id: ID numérico que identifica al turno.
 
-// date: fecha para la cual fue reservado el turno.
+import IAppointment from "../interfaces/IAppointment";
 
-// time: hora para la cual fue reservado el turno.
+const turns: IAppointment[] = [];
+let id: number = 1;
 
-// userId: ID del usuario que agendó el turno, referencia al usuario
+export const getTurnsService = async (): Promise<IAppointment[]> => {
+  return turns;
+};
 
-// status: status actual del turno, que puede ser “active” o “cancelled”.
+export const getTurnByIdService = async (turnId: number): Promise<IAppointment| undefined> => {
+  return turns.find(turn => turn.id === turnId);
+};
 
+export const createTurnService = async (turnData: Omit<IAppointment, "id"> & { userId: number }): Promise<IAppointment | undefined> => {
+    if (!turnData.userId) {
+      throw new Error("El turno debe estar asociado a un usuario.");
+    }
+  
+    const newTurn: IAppointment = {
+      id: id++,
+      ...turnData
+    };
+  
+    turns.push(newTurn);
+  
+    return newTurn;
+  };
+
+export const cancelTurnService = async (turnId: number): Promise<void> => {
+  const turn = turns.find(turn => turn.id === turnId);
+  if (turn) {
+    turn.status = "cancelled";
+  }
+};
