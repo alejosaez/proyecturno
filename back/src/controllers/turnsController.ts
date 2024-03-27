@@ -9,7 +9,7 @@ export const getAllAppointments=async (req:Request, res:Response)=>{
     res.status(200).json("Se muestran todos los turnos");
 }
 
-export const searcAppointmentById= async (req:Request, res:Response)=>{
+export const searchAppointmentById= async (req:Request, res:Response)=>{
     res.status(200).json("buscar el turno");
 
 }
