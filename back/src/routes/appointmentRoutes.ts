@@ -8,7 +8,7 @@
 
 // PUT /appointment/cancel => Cambiar el estatus de un turno a “cancelled”
 import { Router } from "express";
-import { getAllAppointments, searchAppointmentById, createAppointment, upDateAppointment } from "../controllers/turnsController";
+import { getAllAppointments, searchAppointmentById, createAppointment, upDateAppointment } from "../controllers/appointmentController";
 
 const routerAppointment: Router = Router();
 

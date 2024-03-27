@@ -9,10 +9,14 @@ export const createUserService=async(userData:UserDto):Promise <IUser>=>{
 // incluir el nuevo usuario dentro del arreglo
 // retornar el objeto creado 
 const newUser:IUser={
-    id,
+    id:userData.id,
     name:userData.name,
     email:userData.email,
-    active:userData.active
+    birthdate:userData.birthdate,
+    dni:userData.dni,
+    credentialsId:userData.id
+
+  
 
 }
 users.push(newUser)

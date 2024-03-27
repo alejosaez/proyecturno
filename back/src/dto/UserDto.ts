@@ -1,7 +1,9 @@
 interface UserDto{
+    id: number,
     name:"string",
     email:"string",
-    active: boolean
+    birthdate: Date,
+    dni:number
 }
 
 export default UserDto;

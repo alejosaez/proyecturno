@@ -3,12 +3,13 @@ import { createUserService,getUsersService,deleteUserService,userControllerId } 
 import { Request,Response } from "express";
 
 export const createUser=async(req:Request,res:Response)=>{
-    const {name, email, active}=req.body;
-    const newUser: IUser= await createUserService({name,email,active})
+    const {id,name, email, birthdate,dni}=req.body;
+    const newUser: IUser= await createUserService({id, name,email,birthdate,dni})
     res.status(201).json(newUser)
-     
+    //  vamos a crear un usuario que tenga un id, emial, direccion,nombre, Fecha de naciomieno.
+    // tomar los datos del usuario de la body request
+    //  vamos a llamar a la funcion correspondiente de servicio para el nuevo usuario
 }
-
 
 export const getUsers = async (req: Request, res: Response) => {
     res.status(200).json("Se devuelven los usuarios");
