@@ -1,5 +1,6 @@
+import { isNumberObject } from "util/types";
 import IUser from "../interfaces/IUser";
-import { createUserService,deleteUserService,getUserByIdService } from "../services/usersServices"
+import { createUserService,deleteUserService,getUserByIdService,getUsersService} from "../services/usersServices"
 import { Request,Response } from "express";
 
 export const createUser=async(req:Request,res:Response)=>{
@@ -13,9 +14,15 @@ export const createUser=async(req:Request,res:Response)=>{
     //  vamos a llamar a la funcion correspondiente de servicio para el nuevo usuario
 }
 
-export const  getUsersService = async (req: Request, res: Response) => {
-    res.status(200).json("Se devuelven los usuarios");
-}
+export const getUsersController = async (req: Request, res: Response) => {
+    try {
+        const users = await getUsersService();
+        res.json(users);
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+};
 
 export const deleteUser =async()=>{}
 

@@ -9,8 +9,9 @@ const users: IUser[] = [];
 let id: number = 1;
 
 export const getUsersService = async () => {
-  // const users = await AppDataSource.getRepository(User).find()
-  // return users
+  const userRepository = getRepository(User);
+  const users = await userRepository.find();
+  return users;
 };
 
 export const getUserByIdService = async (userId: number): Promise<IUser | undefined> => {
