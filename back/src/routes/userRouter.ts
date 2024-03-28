@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { createUser, getUsers, deleteUser, searchUserbyId } from "../controllers/usersController";
+import { createUser, getUsersService, deleteUser, searchUserbyId } from "../controllers/usersController";
 
 const routerUser: Router = Router();
 
-routerUser.get("/", getUsers);
+routerUser.get("/", getUsersService);
 routerUser.get("/:id", searchUserbyId);
 routerUser.post("/register", createUser);
 routerUser.post("/login");
-routerUser.delete("/");
+routerUser.delete("/", deleteUser);
 
 export default routerUser;
 
