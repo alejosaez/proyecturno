@@ -6,46 +6,50 @@
 
 // password: password del usuario que posee las credenciales.
 
+import { randomBytes } from 'crypto';
 
-import ICredential from "../interfaces/ICredentail"
+let nextCredentialId=1
 
-// Esta será nuestra "base de datos" temporal para almacenar credenciales
-let credentialsDatabase: ICredential[] = [];
-let nextCredentialId = 1; // Para asignar ID único a cada par de credenciales
+// Función para generar una contraseña aleatoria
+function generateRandomPassword(length: number = 10): string {
+    return randomBytes(Math.ceil(length / 2))
+        .toString('hex')
+        .slice(0, length);
+}
 
-export function createCredential(username: string, password: string): number {
-    // Creamos un nuevo objeto de credencial
+// Función para crear una credencial a partir de un correo electrónico
+export function createCredential(email: string): ICredential {
+    // Obtener el nombre de usuario del correo electrónico
+    const username = email.split('@')[0];
+
+    // Generar una contraseña aleatoria
+    const password = generateRandomPassword();
+
+    // Crear un nuevo objeto de credencial
     const newCredential: ICredential = {
         id: nextCredentialId,
         username: username,
         password: password
     };
 
-    // Añadimos la nueva credencial a la base de datos temporal
-    credentialsDatabase.push(newCredential);
+    // Añadir la nueva credencial a la base de datos temporal o realizar la inserción en la base de datos PostgreSQL
 
-    // Incrementamos el ID para el próximo par de credenciales
+    // Aquí debes insertar la credencial en tu base de datos PostgreSQL
+    // Por ejemplo, usando un cliente de PostgreSQL como 'pg'
+
+    // Incrementar el ID para el próximo par de credenciales
     nextCredentialId++;
 
-    // Retornamos el ID del par de credenciales creado
-    return newCredential.id;
+    // Retornar el objeto de la credencial creada
+    return newCredential;
 }
 
-export function validateCredential(username: string, password: string): number | null {
-    // Buscamos la credencial en la base de datos
-    const credential = credentialsDatabase.find(cred => cred.username === username);
-
-    // Si no se encontró la credencial, retornamos null
-    if (!credential) {
-        return null;
-    }
-
-    // Si se encontró la credencial, verificamos si la contraseña coincide
-    if (credential.password === password) {
-        // Si coincide, retornamos el ID de la credencial
-        return credential.id;
-    } else {
-        // Si no coincide, retornamos null
-        return null;
-    }
+// Definir la interfaz ICredential
+export interface ICredential {
+    id: number;
+    username: string;
+    password: string;
 }
+
+// Exportar la interfaz ICredential
+export default ICredential;

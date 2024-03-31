@@ -14,7 +14,8 @@ const routerAppointment: Router = Router();
 
 routerAppointment.get("/", getAllAppointments);
 routerAppointment.get("/:id", searchAppointmentById);
-routerAppointment.post("/register", createAppointment);
-routerAppointment.put("/", upDateAppointment);
+routerAppointment.post("/schedule", createAppointment);
+routerAppointment.put("/cancel/:id", upDateAppointment);
+
 
 export default routerAppointment;
