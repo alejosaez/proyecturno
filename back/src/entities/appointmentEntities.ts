@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
 @Entity({ name: 'turns' })
 export class Turn extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id_turns: number;
 
     @Column({ type: 'date' })
@@ -22,4 +22,7 @@ export class Turn extends BaseEntity {
 
     @Column({ type: 'integer' })
     id_user: number;
+
+    @Column({ type: 'varchar', length: 10, default: 'active' })
+    status: 'active' | 'cancelled';
 }
