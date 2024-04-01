@@ -1,9 +1,10 @@
 import { isNumberObject } from "util/types";
 import IUser from "../interfaces/IUser";
-import { createUserService,deleteUserService,getUserByIdService,getUsersService} from "../services/usersServices"
-import {createCredentialService} from "../services/credentialsServervice"
+import { createUserService,deleteUserService, getUserByIdService,getUsersService} from "../services/usersServices"
+import {createCredentialService,loginService } from "../services/credentialsServervice"
 import { Request,Response } from "express";
 import ICredential from "../interfaces/ICredentail"
+import { Console } from "console";
 
 
 
@@ -53,7 +54,28 @@ export const getUsersController = async (req: Request, res: Response) => {
 
 export const deleteUser =async()=>{}
 
-export const searchUserbyId = async (req: Request, res: Response) => {
+
+export const searchUserById = async (req: Request, res: Response) => {
+    const userId: number = parseInt(req.params.id, 10); // Obtener el ID del usuario de los parámetros de la solicitud
+    try {
+        if (isNaN(userId)) { // Comprobar si el ID del usuario es un número válido
+            throw new Error("El ID del usuario no es un número válido");
+        }
+        console.log("en id que resivo a");
+
+        const user = await getUserByIdService(userId);
+        if (!user) {
+            throw new Error("No se encontró el usuario con el ID");
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(404).json({ error: "Error interno del servidor" });
+    }
+};
+
+
+// export const searchUserbyId = async (req: Request, res: Response) => {
     // const userId = req.params.id;
 
 //  TO DO:- **Descripción:** Obtiene un usuario por su id junto con sus turnos.
@@ -62,7 +84,7 @@ export const searchUserbyId = async (req: Request, res: Response) => {
 // - **Respuesta:**
 //   - 200: Si el usuario fue encontrado.
 //   - 404: Si el usuario no fue encontrado.} 
-    try {
+    // try {
         // Llamar al servicio para obtener los datos del usuario por su ID
         // const user = await getUserByIdService(userId);
 
@@ -73,26 +95,26 @@ export const searchUserbyId = async (req: Request, res: Response) => {
         // Enviar los datos del usuario como respuesta
         // res.json(user);
 
-        res.status(200).json("Se devuelve el usuario con id");
+//         res.status(200).json("Se devuelve el usuario con id");
 
+//     } catch (error) {
+//         console.error('Error al obtener el usuario:', error);
+//         res.status(500).json({ error: 'Error interno del servidor' });
+//     }
+// }
+
+export const loginController = async (req: Request, res: Response) => {
+    const { username, password } = req.body; // Suponiendo que los datos del usuario se envían en el cuerpo de la solicitud
+
+    try {
+        const userId = await loginService(username, password);
+        if (userId !== null) {
+            res.status(200).json({ id: userId }); // Devuelve el ID si las credenciales son válidas
+        } else {
+            res.status(400).json({ error: 'Credenciales incorrectas' }); // Devuelve un error si las credenciales son inválidas
+        }
     } catch (error) {
-        console.error('Error al obtener el usuario:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error(error);
+        res.status(500).json({ error: 'Error en el servidor' }); // Devuelve un error si ocurre un error interno en el servidor
     }
-}
-
-export const loginController= async (req: Request,res:Response)=>{
-    res.status(200).json("se devulve el login del usuario")
-
-// TO DO:
-
-
-// - **Descripción:** Inicia sesión de un usuario.
-// - **Parámetros:**
-//   - username: nombre de usuario.
-//   - password: contraseña del usuario.
-
-// - **Respuesta:**
-//   - 200: Si el usuario fue logueado.
-//   - 400: Si los datos son incorrectos.
-}
+};

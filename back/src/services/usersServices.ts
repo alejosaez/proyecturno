@@ -13,10 +13,22 @@ export const getUsersService = async () => {
   const users = await userRepository.find();
   return users;
 };
+export const getUserByIdService = async (userId: number): Promise<User | null> => {
+  try {
+    // Obtener el repositorio de usuarios
+    const userRepository = getRepository(User);
 
-export const getUserByIdService = async (userId: number): Promise<IUser | undefined> => {
-  return users.find(user => user.id === userId);
+    // Buscar el usuario por su ID 
+    const user = await userRepository.findOne({ where: { id: userId } });
+
+
+    return user ?? null; // Devolver null si el usuario no se encuentra
+  } catch (error) {
+    console.error('Error al buscar usuario por ID:', error);
+    return null; // Devolver null en caso de error
+  }
 };
+
 
 export const createUserService = async (userData: IUser) => {
   const userRepository = getRepository(User); // Obtener el repositorio de User

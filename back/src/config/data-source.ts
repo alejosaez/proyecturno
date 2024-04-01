@@ -1,6 +1,7 @@
 import { createConnection } from "typeorm";
 import { User  } from "../entities/UserEntities";
 import { Credential } from "../entities/credentialEntities";
+import{Turn} from "../entities/appointmentEntities"
 
 const AppDataSource = createConnection({
     type: "postgres",
@@ -11,7 +12,7 @@ const AppDataSource = createConnection({
     database: "appointment",
     synchronize: true,
     logging: true,
-    entities: [User,Credential],
+    entities: [User,Credential,Turn],
     subscribers: [],
     migrations: [],
 }).then(connection => {
