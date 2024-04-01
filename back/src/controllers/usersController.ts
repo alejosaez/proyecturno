@@ -1,14 +1,10 @@
 import { isNumberObject } from "util/types";
 import IUser from "../interfaces/IUser";
 import { createUserService,deleteUserService,getUserByIdService,getUsersService} from "../services/usersServices"
-import {createCredential} from "../services/credentialsServervice"
+import {createCredentialService} from "../services/credentialsServervice"
 import { Request,Response } from "express";
 import ICredential from "../interfaces/ICredentail"
 
-export const createUser=async(req:Request,res:Response)=>{
-    const {id, name, email, birthdate, dni,credentialsId } = req.body;
-    const newCredential:ICredential=await createCredential(email)
-    const newUser: IUser = await createUserService({ id,name, email, birthdate, dni,credentialsId});
 
 
 //     TO DO:
@@ -25,11 +21,25 @@ export const createUser=async(req:Request,res:Response)=>{
 //   - 201: Si el usuario fue creado.
 //   - 400: Si los datos son incorrectos.
 
-    res.status(201).json(newUser)
-    //  vamos a crear un usuario que tenga un id, emial, direccion,nombre, Fecha de naciomieno.
-    // tomar los datos del usuario de la body request
-    //  vamos a llamar a la funcion correspondiente de servicio para el nuevo usuario
-}
+export const createUser = async (req: Request, res: Response) => {
+    const { id, name, email, birthdate, dni } = req.body;
+    try {
+        // Crear una nueva credencial
+        const newCredential: ICredential = await createCredentialService(email);
+
+        // Obtener el ID de la nueva credencial
+        const credentialsId = newCredential.id;
+
+        // Crear un nuevo usuario utilizando el ID de la credencial
+        const newUser: IUser = await createUserService({ id, name, email, birthdate, dni, credentialsId });
+
+        // Retornar el nuevo usuario creado
+        return res.status(201).json(newUser);
+    } catch (error) {
+        // Manejar errores
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 export const getUsersController = async (req: Request, res: Response) => {
     try {

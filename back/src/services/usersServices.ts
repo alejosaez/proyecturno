@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import IUser from "../interfaces/IUser";
-import { createCredential } from "./credentialsServervice";
+
 import  AppDataSource from "../config/data-source";
 import { User } from "../entities/UserEntities";
 import { getRepository } from "typeorm"
