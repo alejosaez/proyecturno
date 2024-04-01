@@ -39,24 +39,27 @@ export const getTurnsService = async (): Promise<IAppointment[]> => {
 
 
 
-// export const getTurnByIdService = async (turnId: number): Promise<IAppointment| undefined> => {
-//   return turns.find(turn => turn.id === turnId);
-// };
+export const getTurnByIdService = async (turnId: number): Promise<IAppointment | undefined> => {
+  try {
+    const turnRepository = getRepository(Turn);
+
+    // Buscar el turno por su ID 
+    const turn = await turnRepository.findOne({ where: { id_turns: turnId } });
+
+    return turn || undefined; // Devolver undefined si el turno no se encuentra
+  } catch (error) {
+    console.error('Error al buscar turno por ID:', error);
+    return undefined; // Devolver undefined en caso de error
+  }
+};
+
 
 export const createTurnService = async (turnData: Omit<IAppointment, "id">): Promise<IAppointment | undefined> => {
   try {
       // Crear una nueva instancia de la entidad Turn con los datos proporcionados
-      const newTurn = new Turn();
-      newTurn.date = turnData.date;
-      newTurn.time = turnData.time;
-      newTurn.observation = turnData.observation;
-      newTurn.medical_specialty = turnData.medical_specialty;
-      newTurn.phone_number = turnData.phone_number;
-      newTurn.status = turnData.status;
-      // No necesitamos establecer el id_user aquí, ya que se establece en el controlador antes de llamar a este servicio
-
-      // Guardar el nuevo turno en la base de datos
-      await getRepository(Turn).save(newTurn);
+      const turnRepository=getRepository( Turn)
+      const newTurn= turnRepository.create(turnData)
+      await turnRepository.save(newTurn)
 
       return newTurn;
   } catch (error) {

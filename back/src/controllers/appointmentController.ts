@@ -3,8 +3,9 @@
 // router.post("/appointments/register",createAppointment) // recibo por query.body en objeto a almacenar
 // router.put("/appointment",upDateAppointment)
 import { Request,Response } from "express";
-import{getTurnsService,createTurnService} from "../services/appointmentServices"
+import{getTurnsService,createTurnService,getTurnByIdService } from "../services/appointmentServices"
 import IAppointment from "../interfaces/IAppointment"
+import { log } from "console";
 
 
 export const getAllAppointments = async (req: Request, res: Response) => {
@@ -14,6 +15,7 @@ export const getAllAppointments = async (req: Request, res: Response) => {
 
         // Si se encontraron turnos, devolver el código 200 y la lista de turnos
         if (appointments.length > 0) {
+        
             return res.status(200).json(appointments);
         } else {
             // Si no se encontraron turnos, devolver el código 404
@@ -43,62 +45,59 @@ export const getAllAppointments = async (req: Request, res: Response) => {
 // //   - 404: Si no se encontraron turnos.
 
 // 
+export const searchAppointmentById= async (req: Request, res: Response) => {
+    const turnId: number = parseInt(req.params.id, 10); // Obtener el ID del usuario de los parámetros de la solicitud
+    try {
+        if (isNaN(turnId)) { // Comprobar si el ID del usuario es un número válido
+            throw new Error("El ID del turno no pudo ser encontrado");
+        }
+        console.log("en id que resivo a");
 
-export const searchAppointmentById= async (req:Request, res:Response)=>{
-    res.status(200).json("buscar el turno");
+        const turn = await getTurnByIdService(turnId);
+        if (!turn) {
+            throw new Error("No se encontró el turno con el ID");
+        }
+        res.status(200).json(turn);
+    } catch (error) {
+        console.error("Error al obtener el turno", error);
+        res.status(404).json({ error: "el turno no fue encontrado" });
+    }
+};
 
-//     TO DO:
+// export const searchAppointmentById= async (req:Request, res:Response)=>{
+//     res.status(200).json("buscar el turno");
 
-//     - **Descripción:** Obtiene el detalle de un turno.
+// //     TO DO:
 
-// - **Parámetros:** id: id del turno.
+// //     - **Descripción:** Obtiene el detalle de un turno.
 
-// - **Respuesta:**
-//   - 200: Si el turno fue encontrado.
-//   - 404: Si el turno no fue encontrado.
+// // - **Parámetros:** id: id del turno.
+
+// // - **Respuesta:**
+// //   - 200: Si el turno fue encontrado.
+// //   - 404: Si el turno no fue encontrado.
 
 
 
-}
+// }
+
 
 export const createAppointment = async (req: Request, res: Response) => {
-
-const {id_turns,date,time,observation,medical_specialty,phone_number,id_user,status}= req.body;
-try{
-    const newAppointment=IAppointment =await createTurnService({id_turns,date,time,observation,medical_specialty,phone_number,id_user,status})
-    return res.status(201).json(newAppointment)
-
-} catch(error){
-    return res.status(400).json({ error: "Los datos son incorrectos" });
+    const { id_turns, date, time, observation, medical_specialty, phone_number, id_user, status } = req.body;
+    try {
+        // Suponiendo que createTurnService devuelve un objeto que cumple con el tipo IAppointment
+        const newAppointment:IAppointment|undefined = await createTurnService({ id_turns, date, time, observation, medical_specialty, phone_number, id_user, status });
+        return res.status(201).json(newAppointment);
+    } catch (error) {
+        return res.status(400).json({ error: "Los datos son incorrectos" });
+    }
 }
 
 
-}
 
 
 
 
-
-
-
-
-// TO DO:
-// - **Descripción:** Crea un nuevo turno.
-// - **Parámetros:**
-//   id_turns: number;
-//     date: 
-//     time: 
-//     observation: 
-//     medical_specialty: 
-//     phone_number: 
-//     id_user:
-//     status:
-// // 
-// 
-
-// - **Respuesta:**
-//     - 201: Si el turno fue creado.
-//     - 400: Si los datos son incorrectos.
 
 
 

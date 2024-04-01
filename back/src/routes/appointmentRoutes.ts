@@ -4,16 +4,16 @@
 
 // GET /appointment => Obtener el detalle de un turno específico.
 
-// POST /appointment/schedule => Agendar un nuevo turno.
+// POST /appointment/schedule => Agendar un nuevo turno.a
 
 // PUT /appointment/cancel => Cambiar el estatus de un turno a “cancelled”
 import { Router } from "express";
-import { getAllAppointments, searchAppointmentById, createAppointment, upDateAppointment } from "../controllers/appointmentController";
-
+import { getAllAppointments, createAppointment,searchAppointmentById ,upDateAppointment } from "../controllers/appointmentController";
+// searchAppointmentById
 const routerAppointment: Router = Router();
 
-routerAppointment.get("/", getAllAppointments);
-routerAppointment.get("/:id", searchAppointmentById);
+routerAppointment.get("/all", getAllAppointments);
+routerAppointment.get("/:id",searchAppointmentById);
 routerAppointment.post("/schedule", createAppointment);
 routerAppointment.put("/cancel/:id", upDateAppointment);
 

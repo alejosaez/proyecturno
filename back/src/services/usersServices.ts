@@ -29,12 +29,16 @@ export const getUserByIdService = async (userId: number): Promise<User | null> =
   }
 };
 
-
 export const createUserService = async (userData: IUser) => {
-  const userRepository = getRepository(User); // Obtener el repositorio de User
-  const newUser = userRepository.create(userData); // Crear una nueva instancia de User
-  await userRepository.save(newUser); // Guardar el nuevo usuario en la base de datos
-  return newUser;
+  try {
+    const userRepository = getRepository(User); // Obtener el repositorio de User
+    const newUser = userRepository.create(userData); // Crear una nueva instancia de User
+    await userRepository.save(newUser); // Guardar el nuevo usuario en la base de datos
+    return newUser;
+  } catch (error) {
+    // Si ocurre un error, lo capturamos aquí
+    throw new Error("Error al crear el usuario");
+  }
 };
 
  
