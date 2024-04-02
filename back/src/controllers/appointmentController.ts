@@ -3,7 +3,7 @@
 // router.post("/appointments/register",createAppointment) // recibo por query.body en objeto a almacenar
 // router.put("/appointment",upDateAppointment)
 import { Request,Response } from "express";
-import{getTurnsService,createTurnService,getTurnByIdService } from "../services/appointmentServices"
+import{getTurnsService,createTurnService,getTurnByIdService,cancelTurnService} from "../services/appointmentServices"
 import IAppointment from "../interfaces/IAppointment"
 import { log } from "console";
 
@@ -100,9 +100,31 @@ export const createAppointment = async (req: Request, res: Response) => {
 
 
 
+export const upDateAppointment = async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-export const upDateAppointment=async (req:Request, res:Response)=>{
-    res.status(200).json("Se actualiza el turno")
+    try {
+        // Obtener el turno por su ID
+        const turn = await getTurnByIdService(parseInt(id, 10));
+
+        if (!turn) {
+            // Si no se encuentra el turno, devolver un error 404
+            return res.status(404).json({ error: "El turno no fue encontrado." });
+        }
+
+        // Actualizar el estado (status) del turno a "cancelled"
+        await cancelTurnService(turn.id_turns);
+
+        // Respuesta exitosa
+        return res.status(200).json({ message: "El turno fue cancelado exitosamente." });
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al cancelar turno:', error);
+        return res.status(500).json({ error: "Error interno del servidor." });
+    }
+};
+// export const upDateAppointment=async (req:Request, res:Response)=>{
+//     res.status(200).json("Se actualiza el turno")
 
 //     - **Descripción:** Cancela un turno.
 // - **Parámetros:** id: id del turno.
@@ -111,4 +133,3 @@ export const upDateAppointment=async (req:Request, res:Response)=>{
 //   - 200: Si el turno fue cancelado.
 //   - 404: Si el turno no fue encontrado.
 
-}

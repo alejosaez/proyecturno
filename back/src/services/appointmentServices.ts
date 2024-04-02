@@ -53,6 +53,30 @@ export const getTurnByIdService = async (turnId: number): Promise<IAppointment |
   }
 };
 
+export const cancelTurnService = async (turnId: number): Promise<void> => {
+  try {
+      const turnRepository = getRepository(Turn);
+
+      // Obtener el turno por su ID
+      const turn = await turnRepository.findOne({ where: { id_turns: turnId } });
+      if(!turn){
+        throw new Error("No existe un turno con ese id")
+      }
+
+      // Actualizar el estado del turno a "cancelled"
+      turn.status = 'cancelled';
+
+      // Guardar los cambios en la base de datos
+      await turnRepository.save(turn);
+  } catch (error) {
+      // Manejo de errores
+      console.error('Error al cancelar turno en el servicio:', error);
+      throw new Error('Error al cancelar turno en el servicio.');
+  }
+};
+
+
+
 
 export const createTurnService = async (turnData: Omit<IAppointment, "id">): Promise<IAppointment | undefined> => {
   try {
