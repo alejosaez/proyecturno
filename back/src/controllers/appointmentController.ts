@@ -7,20 +7,23 @@ import{getTurnsService,createTurnService,getTurnByIdService,cancelTurnService} f
 import IAppointment from "../interfaces/IAppointment"
 import { log } from "console";
 
-
 export const getAllAppointments = async (req: Request, res: Response) => {
     try {
         // Llamar al servicio para obtener todos los turnos
         const appointments = await getTurnsService();
 
-        // Si se encontraron turnos, devolver el código 200 y la lista de turnos
-        if (appointments.length > 0) {
-        
-            return res.status(200).json(appointments);
-        } else {
-            // Si no se encontraron turnos, devolver el código 404
+        // Si no se encontraron turnos, devolver el código 404
+        if (appointments.length === 0) {
             return res.status(404).json({ error: "No se encontraron turnos" });
         }
+        
+        // Si hay más de un turno, devolver el arreglo de turnos
+        if (appointments.length > 1) {
+            return res.status(200).json(appointments);
+        }
+
+        // Si hay un solo turno, devolver el objeto de turno
+        return res.status(200).json(appointments[0]);
     } catch (error) {
         // Manejar errores
         console.error("Error al obtener los turnos:", error);
