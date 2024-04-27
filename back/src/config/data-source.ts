@@ -17,10 +17,10 @@ const AppDataSource = createConnection({
     migrations: [],
 }).then(connection => {
     console.log("Conexión a la base de datos establecida correctamente");
-    return connection; // Devuelve la conexión establecida
+    return connection; 
 }).catch(error => {
     console.log("Error al establecer conexión a la base de datos:", error);
-    throw error; // Lanza el error para que se maneje en otro lugar
+    throw error; 
 });
 
 export default AppDataSource;

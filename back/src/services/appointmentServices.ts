@@ -3,6 +3,11 @@ import IAppointment from "../interfaces/IAppointment";
 import { getConnection } from 'typeorm';
 import { Turn } from "../entities/appointmentEntities" 
 import { getRepository } from 'typeorm';
+import { reSendNewTurn } from "./email/reSendNewTurn";
+import { getUserByIdService } from "./usersServices";
+
+
+
 
 const turns: IAppointment[] = [];
 let id: number = 1;
@@ -10,10 +15,10 @@ let id: number = 1;
 
 export const getTurnsService = async (): Promise<IAppointment[]> => {
   try {
-    // Obtener todos los turnos de la base de datos utilizando TypeORM
+    
     const appointments = await getConnection().getRepository(Turn).find();
 
-    // Mapear los turnos a un formato que coincide con la interfaz IAppointment
+    
     const appointmentsFormatted: IAppointment[] = appointments.map(appointment => ({
       id_turns: appointment.id_turns,
       date: appointment.date,
@@ -36,6 +41,19 @@ export const getTurnsService = async (): Promise<IAppointment[]> => {
 
 
 
+export const getTurnByUserIdService = async (userId: number): Promise<IAppointment[] | undefined> => {
+  try {
+    const turnRepository = getRepository(Turn);
+
+   
+    const turns = await turnRepository.find({ where: { id_user: userId } });
+
+    return turns || [];
+  } catch (error) {
+    console.error('Error al buscar los turnos por ID de usuario:', error);
+    return undefined;
+  }
+};
 
 
 
@@ -43,33 +61,33 @@ export const getTurnByIdService = async (turnId: number): Promise<IAppointment |
   try {
     const turnRepository = getRepository(Turn);
 
-    // Buscar el turno por su ID 
+   
     const turn = await turnRepository.findOne({ where: { id_turns: turnId } });
 
-    return turn || undefined; // Devolver undefined si el turno no se encuentra
+    return turn || undefined; 
   } catch (error) {
     console.error('Error al buscar turno por ID:', error);
-    return undefined; // Devolver undefined en caso de error
+    return undefined; 
   }
-};
+};;
 
 export const cancelTurnService = async (turnId: number): Promise<void> => {
   try {
       const turnRepository = getRepository(Turn);
 
-      // Obtener el turno por su ID
+     
       const turn = await turnRepository.findOne({ where: { id_turns: turnId } });
       if(!turn){
         throw new Error("No existe un turno con ese id")
       }
 
-      // Actualizar el estado del turno a "cancelled"
+     
       turn.status = 'cancelled';
 
-      // Guardar los cambios en la base de datos
+      
       await turnRepository.save(turn);
   } catch (error) {
-      // Manejo de errores
+      
       console.error('Error al cancelar turno en el servicio:', error);
       throw new Error('Error al cancelar turno en el servicio.');
   }
@@ -80,10 +98,18 @@ export const cancelTurnService = async (turnId: number): Promise<void> => {
 
 export const createTurnService = async (turnData: Omit<IAppointment, "id">): Promise<IAppointment | undefined> => {
   try {
-      // Crear una nueva instancia de la entidad Turn con los datos proporcionados
+     
       const turnRepository=getRepository( Turn)
       const newTurn= turnRepository.create(turnData)
       await turnRepository.save(newTurn)
+      const user = await getUserByIdService(turnData.id_user);
+      if (user) {
+        await reSendNewTurn(user.email, turnData.date, turnData.time, turnData.observation, turnData.medical_specialty, turnData.phone_number, user.name);
+      } else {
+        console.error("User not found for turn creation");
+      }
+  
+      return newTurn;
 
       return newTurn;
   } catch (error) {
@@ -92,9 +118,4 @@ export const createTurnService = async (turnData: Omit<IAppointment, "id">): Pro
   }
 };
 
-// export const cancelTurnService = async (turnId: number): Promise<void> => {
-//   // const turn = turns.find(turn => turn.id === turnId);
-//   if (turn) {
-//     turn.status = "cancelled";
-//   }
-// };
+

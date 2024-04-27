@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity({
-    name: "credentials" // Nombre de la tabla en la base de datos
+    name: "credentials"
 })
 export class Credential {
     @PrimaryGeneratedColumn()

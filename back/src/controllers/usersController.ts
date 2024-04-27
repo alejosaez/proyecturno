@@ -1,10 +1,10 @@
 import { isNumberObject } from "util/types";
 import IUser from "../interfaces/IUser";
-import { createUserService,deleteUserService, getUserByIdService,getUsersService} from "../services/usersServices"
-import {createCredentialService,loginService } from "../services/credentialsServervice"
-import { Request,Response } from "express";
+import { createUserService, deleteUserService, getUserByIdService, getUsersService } from "../services/usersServices"
+import { createCredentialService, loginService, getCredentialServiceByEmail } from "../services/credentialsServervice"
+import { Request, Response } from "express";
 import ICredential from "../interfaces/ICredentail"
-import { Console } from "console";
+
 
 
 
@@ -25,19 +25,15 @@ import { Console } from "console";
 export const createUser = async (req: Request, res: Response) => {
     const { id, name, email, birthdate, dni } = req.body;
     try {
-        // Crear una nueva credencial
         const newCredential: ICredential = await createCredentialService(email);
 
-        // Obtener el ID de la nueva credencial
         const credentialsId = newCredential.id;
 
-        // Crear un nuevo usuario utilizando el ID de la credencial
         const newUser: IUser = await createUserService({ id, name, email, birthdate, dni, credentialsId });
 
-        // Retornar el nuevo usuario creado
         return res.status(201).json(newUser);
     } catch (error) {
-        // Manejar errores
+
         return res.status(400).json({ error: "Internal server error" });
     }
 };
@@ -52,7 +48,7 @@ export const getUsersController = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteUser =async()=>{}
+export const deleteUser = async () => { }
 
 
 export const searchUserById = async (req: Request, res: Response) => {
@@ -76,7 +72,7 @@ export const searchUserById = async (req: Request, res: Response) => {
 
 
 // export const searchUserbyId = async (req: Request, res: Response) => {
-    // const userId = req.params.id;
+// const userId = req.params.id;
 
 //  TO DO:- **Descripción:** Obtiene un usuario por su id junto con sus turnos.
 // - **Parámetros:** id: id del usuario.
@@ -84,16 +80,16 @@ export const searchUserById = async (req: Request, res: Response) => {
 // - **Respuesta:**
 //   - 200: Si el usuario fue encontrado.
 //   - 404: Si el usuario no fue encontrado.} 
-    // try {
-        // Llamar al servicio para obtener los datos del usuario por su ID
-        // const user = await getUserByIdService(userId);
+// try {
+// Llamar al servicio para obtener los datos del usuario por su ID
+// const user = await getUserByIdService(userId);
 
-        // if (!userId) {
-        //     return res.status(404).json({ error: 'Usuario no encontrado' });
-        // }
+// if (!userId) {
+//     return res.status(404).json({ error: 'Usuario no encontrado' });
+// }
 
-        // Enviar los datos del usuario como respuesta
-        // res.json(user);
+// Enviar los datos del usuario como respuesta
+// res.json(user);
 
 //         res.status(200).json("Se devuelve el usuario con id");
 
@@ -104,17 +100,29 @@ export const searchUserById = async (req: Request, res: Response) => {
 // }
 
 export const loginController = async (req: Request, res: Response) => {
-    const { username, password } = req.body; // Suponiendo que los datos del usuario se envían en el cuerpo de la solicitud
+    const { username, password } = req.body;
 
     try {
         const userId = await loginService(username, password);
         if (userId !== null) {
-            res.status(200).json({ id: userId }); // Devuelve el ID si las credenciales son válidas
+            res.status(200).json({ id: userId });
         } else {
-            res.status(400).json({ error: 'Credenciales incorrectas' }); // Devuelve un error si las credenciales son inválidas
+            res.status(400).json({ error: 'Credenciales incorrectas' });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error en el servidor' }); // Devuelve un error si ocurre un error interno en el servidor
+        res.status(500).json({ error: 'Error en el servidor' });
     }
 };
+
+
+export const getCredentialByEmail = async (req: Request, res: Response) => {
+    const email = req.params.email
+    try {
+        const credentialUser = await getCredentialServiceByEmail(email);
+        res.status(200).json(credentialUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+}

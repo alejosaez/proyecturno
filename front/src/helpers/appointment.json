@@ -1,0 +1,22 @@
+[
+   {
+      "id_turns": 9,
+      "date": "2024-05-01",
+      "time": "13:00:00",
+      "observation": "No veo Nada",
+      "medical_specialty": "oculista",
+      "phone_number": "227156547",
+      "id_user": 6,
+      "status": "cancel"
+   },
+   {
+      "id_turns": 10,
+      "date": "2024-05-01",
+      "time": "13:00:00",
+      "observation": "No veo Nada",
+      "medical_specialty": "oculista",
+      "phone_number": "227156547",
+      "id_user": 6,
+      "status": "cancel"
+   }
+]

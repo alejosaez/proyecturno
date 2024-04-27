@@ -1,16 +1,33 @@
 "use strict";
-// const express = require("express");
-// require("dotenv").config()
-// const PORT=process.env.PORT
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// const server=express();
-// server.listen(PORT, ()=> {
-//     console.log("server listening on port 3001")
-// })
 const server_1 = __importDefault(require("./server"));
-server_1.default.listen(3001, () => {
-    console.log("server listening on port 3001");
-});
+const envs_1 = require("./config/envs");
+require("reflect-metadata");
+const data_source_1 = __importDefault(require("./config/data-source"));
+function startServer() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield data_source_1.default;
+            console.log("Conexión a la base de datos realizada con éxito");
+            server_1.default.listen(envs_1.PORT, () => {
+                console.log(`Servidor escuchando en el puerto ${envs_1.PORT}`);
+            });
+        }
+        catch (error) {
+            console.error("Error al establecer conexión a la base de datos:", error);
+        }
+    });
+}
+startServer();

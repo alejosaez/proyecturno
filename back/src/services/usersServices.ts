@@ -15,28 +15,28 @@ export const getUsersService = async () => {
 };
 export const getUserByIdService = async (userId: number): Promise<User | null> => {
   try {
-    // Obtener el repositorio de usuarios
+   
     const userRepository = getRepository(User);
 
-    // Buscar el usuario por su ID 
+    
     const user = await userRepository.findOne({ where: { id: userId } });
 
 
-    return user ?? null; // Devolver null si el usuario no se encuentra
+    return user ?? null; 
   } catch (error) {
     console.error('Error al buscar usuario por ID:', error);
-    return null; // Devolver null en caso de error
+    return null;
   }
 };
 
 export const createUserService = async (userData: IUser) => {
   try {
-    const userRepository = getRepository(User); // Obtener el repositorio de User
-    const newUser = userRepository.create(userData); // Crear una nueva instancia de User
-    await userRepository.save(newUser); // Guardar el nuevo usuario en la base de datos
+    const userRepository = getRepository(User); 
+    const newUser = userRepository.create(userData); 
+    await userRepository.save(newUser); 
     return newUser;
   } catch (error) {
-    // Si ocurre un error, lo capturamos aquí
+    
     throw new Error("Error al crear el usuario");
   }
 };
